@@ -209,6 +209,7 @@ public:
     friend class ModeAcro_Heli;
     friend class ModeAltHold;
     friend class ModeAuto;
+    friend class ModeDrop;
     friend class ModeAutoTune;
     friend class ModeAvoidADSB;
     friend class ModeBrake;
@@ -901,6 +902,7 @@ private:
 #if MODE_AUTO_ENABLED == ENABLED
     ModeAuto mode_auto;
 #endif
+ModeDrop mode_drop;
 #if AUTOTUNE_ENABLED == ENABLED
     AutoTune autotune;
     ModeAutoTune mode_autotune;

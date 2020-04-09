@@ -36,6 +36,7 @@ public:
         ZIGZAG    =    24,  // ZIGZAG mode is able to fly in a zigzag manner with predefined point A and point B
         SYSTEMID  =    25,  // System ID mode produces automated system identification signals in the controllers
         AUTOROTATE =   26,  // Autonomous autorotation
+        DROP =         27,  // Set the servo and drop the payload with precision
     };
 
     // constructor
@@ -53,10 +54,18 @@ public:
     virtual bool requires_GPS() const = 0;
     virtual bool has_manual_throttle() const = 0;
     virtual bool allows_arming(bool from_gcs) const = 0;
-    virtual bool is_autopilot() const { return false; }
-    virtual bool has_user_takeoff(bool must_navigate) const { return false; }
-    virtual bool in_guided_mode() const { return false; }
-    virtual bool logs_attitude() const { return false; }
+    virtual bool is_autopilot() const {
+        return false;
+    }
+    virtual bool has_user_takeoff(bool must_navigate) const {
+        return false;
+    }
+    virtual bool in_guided_mode() const {
+        return false;
+    }
+    virtual bool logs_attitude() const {
+        return false;
+    }
 
     // return a string for this flightmode
     virtual const char *name() const = 0;
@@ -64,18 +73,32 @@ public:
 
     bool do_user_takeoff(float takeoff_alt_cm, bool must_navigate);
     virtual bool is_taking_off() const;
-    static void takeoff_stop() { takeoff.stop(); }
+    static void takeoff_stop() {
+        takeoff.stop();
+    }
 
-    virtual bool is_landing() const { return false; }
+    virtual bool is_landing() const {
+        return false;
+    }
 
     // mode requires terrain to be present to be functional
-    virtual bool requires_terrain_failsafe() const { return false; }
+    virtual bool requires_terrain_failsafe() const {
+        return false;
+    }
 
     // functions for reporting to GCS
-    virtual bool get_wp(Location &loc) { return false; };
-    virtual int32_t wp_bearing() const { return 0; }
-    virtual uint32_t wp_distance() const { return 0; }
-    virtual float crosstrack_error() const { return 0.0f;}
+    virtual bool get_wp(Location &loc) {
+        return false;
+    };
+    virtual int32_t wp_bearing() const {
+        return 0;
+    }
+    virtual uint32_t wp_distance() const {
+        return 0;
+    }
+    virtual float crosstrack_error() const {
+        return 0.0f;
+    }
 
     void update_navigation();
 
@@ -155,7 +178,9 @@ protected:
                              float& takeoff_climb_rate);
         bool triggered(float target_climb_rate) const;
 
-        bool running() const { return _running; }
+        bool running() const {
+            return _running;
+        }
     private:
         bool _running;
         float max_speed;
@@ -186,7 +211,9 @@ public:
         float yaw();
 
         // mode(): current method of determining desired yaw:
-        autopilot_yaw_mode mode() const { return (autopilot_yaw_mode)_mode; }
+        autopilot_yaw_mode mode() const {
+            return (autopilot_yaw_mode)_mode;
+        }
         void set_mode_to_default(bool rtl);
         void set_mode(autopilot_yaw_mode new_mode);
         autopilot_yaw_mode default_mode(bool rtl) const;
@@ -267,15 +294,27 @@ public:
 
     virtual void run() override;
 
-    bool requires_GPS() const override { return false; }
-    bool has_manual_throttle() const override { return true; }
-    bool allows_arming(bool from_gcs) const override { return true; };
-    bool is_autopilot() const override { return false; }
+    bool requires_GPS() const override {
+        return false;
+    }
+    bool has_manual_throttle() const override {
+        return true;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return true;
+    };
+    bool is_autopilot() const override {
+        return false;
+    }
 
 protected:
 
-    const char *name() const override { return "ACRO"; }
-    const char *name4() const override { return "ACRO"; }
+    const char *name() const override {
+        return "ACRO";
+    }
+    const char *name4() const override {
+        return "ACRO";
+    }
 
     void get_pilot_desired_angle_rates(int16_t roll_in, int16_t pitch_in, int16_t yaw_in, float &roll_out, float &pitch_out, float &yaw_out);
 
@@ -312,18 +351,30 @@ public:
     bool init(bool ignore_checks) override;
     void run() override;
 
-    bool requires_GPS() const override { return false; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(bool from_gcs) const override { return true; };
-    bool is_autopilot() const override { return false; }
+    bool requires_GPS() const override {
+        return false;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return true;
+    };
+    bool is_autopilot() const override {
+        return false;
+    }
     bool has_user_takeoff(bool must_navigate) const override {
         return !must_navigate;
     }
 
 protected:
 
-    const char *name() const override { return "ALT_HOLD"; }
-    const char *name4() const override { return "ALTH"; }
+    const char *name() const override {
+        return "ALT_HOLD";
+    }
+    const char *name4() const override {
+        return "ALTH";
+    }
 
 private:
 
@@ -339,14 +390,26 @@ public:
     bool init(bool ignore_checks) override;
     void run() override;
 
-    bool requires_GPS() const override { return true; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(bool from_gcs) const override { return false; };
-    bool is_autopilot() const override { return true; }
-    bool in_guided_mode() const override { return mode() == Auto_NavGuided; }
+    bool requires_GPS() const override {
+        return true;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return false;
+    };
+    bool is_autopilot() const override {
+        return true;
+    }
+    bool in_guided_mode() const override {
+        return mode() == Auto_NavGuided;
+    }
 
     // Auto
-    AutoMode mode() const { return _mode; }
+    AutoMode mode() const {
+        return _mode;
+    }
 
     bool loiter_start();
     void rtl_start();
@@ -364,11 +427,15 @@ public:
 
     bool is_taking_off() const override;
 
-    bool requires_terrain_failsafe() const override { return true; }
+    bool requires_terrain_failsafe() const override {
+        return true;
+    }
 
     // return true if this flight mode supports user takeoff
     //  must_nagivate is true if mode must also control horizontal position
-    virtual bool has_user_takeoff(bool must_navigate) const override { return false; }
+    virtual bool has_user_takeoff(bool must_navigate) const override {
+        return false;
+    }
 
     void payload_place_start();
 
@@ -382,12 +449,215 @@ public:
 
 protected:
 
-    const char *name() const override { return "AUTO"; }
-    const char *name4() const override { return "AUTO"; }
+    const char *name() const override {
+        return "AUTO";
+    }
+    const char *name4() const override {
+        return "AUTO";
+    }
 
     uint32_t wp_distance() const override;
     int32_t wp_bearing() const override;
-    float crosstrack_error() const override { return wp_nav->crosstrack_error();}
+    float crosstrack_error() const override {
+        return wp_nav->crosstrack_error();
+    }
+    bool get_wp(Location &loc) override;
+    void run_autopilot() override;
+
+private:
+
+    bool start_command(const AP_Mission::Mission_Command& cmd);
+    bool verify_command(const AP_Mission::Mission_Command& cmd);
+    void exit_mission();
+
+    void takeoff_run();
+    void wp_run();
+    void spline_run();
+    void land_run();
+    void rtl_run();
+    void circle_run();
+    void nav_guided_run();
+    void loiter_run();
+    void loiter_to_alt_run();
+
+    Location loc_from_cmd(const AP_Mission::Mission_Command& cmd) const;
+
+    void payload_place_start(const Vector3f& destination);
+    void payload_place_run();
+    bool payload_place_run_should_run();
+    void payload_place_run_loiter();
+    void payload_place_run_descend();
+    void payload_place_run_release();
+
+    AutoMode _mode = Auto_TakeOff;   // controls which auto controller is run
+
+    Location terrain_adjusted_location(const AP_Mission::Mission_Command& cmd) const;
+
+    void do_takeoff(const AP_Mission::Mission_Command& cmd);
+    void do_nav_wp(const AP_Mission::Mission_Command& cmd);
+    void do_land(const AP_Mission::Mission_Command& cmd);
+    void do_loiter_unlimited(const AP_Mission::Mission_Command& cmd);
+    void do_circle(const AP_Mission::Mission_Command& cmd);
+    void do_loiter_time(const AP_Mission::Mission_Command& cmd);
+    void do_loiter_to_alt(const AP_Mission::Mission_Command& cmd);
+    void do_spline_wp(const AP_Mission::Mission_Command& cmd);
+#if NAV_GUIDED == ENABLED
+    void do_nav_guided_enable(const AP_Mission::Mission_Command& cmd);
+    void do_guided_limits(const AP_Mission::Mission_Command& cmd);
+#endif
+    void do_nav_delay(const AP_Mission::Mission_Command& cmd);
+    void do_wait_delay(const AP_Mission::Mission_Command& cmd);
+    void do_within_distance(const AP_Mission::Mission_Command& cmd);
+    void do_yaw(const AP_Mission::Mission_Command& cmd);
+    void do_change_speed(const AP_Mission::Mission_Command& cmd);
+    void do_set_home(const AP_Mission::Mission_Command& cmd);
+    void do_roi(const AP_Mission::Mission_Command& cmd);
+    void do_mount_control(const AP_Mission::Mission_Command& cmd);
+#if PARACHUTE == ENABLED
+    void do_parachute(const AP_Mission::Mission_Command& cmd);
+#endif
+#if WINCH_ENABLED == ENABLED
+    void do_winch(const AP_Mission::Mission_Command& cmd);
+#endif
+    void do_payload_place(const AP_Mission::Mission_Command& cmd);
+    void do_RTL(void);
+
+    bool verify_takeoff();
+    bool verify_land();
+    bool verify_payload_place();
+    bool verify_loiter_unlimited();
+    bool verify_loiter_time(const AP_Mission::Mission_Command& cmd);
+    bool verify_loiter_to_alt();
+    bool verify_RTL();
+    bool verify_wait_delay();
+    bool verify_within_distance();
+    bool verify_yaw();
+    bool verify_nav_wp(const AP_Mission::Mission_Command& cmd);
+    bool verify_circle(const AP_Mission::Mission_Command& cmd);
+    bool verify_spline_wp(const AP_Mission::Mission_Command& cmd);
+#if NAV_GUIDED == ENABLED
+    bool verify_nav_guided_enable(const AP_Mission::Mission_Command& cmd);
+#endif
+    bool verify_nav_delay(const AP_Mission::Mission_Command& cmd);
+
+    // Loiter control
+    uint16_t loiter_time_max;                // How long we should stay in Loiter Mode for mission scripting (time in seconds)
+    uint32_t loiter_time;                    // How long have we been loitering - The start time in millis
+
+    struct {
+        bool reached_destination_xy : 1;
+        bool loiter_start_done : 1;
+        bool reached_alt : 1;
+        float alt_error_cm;
+        int32_t alt;
+    } loiter_to_alt;
+
+    // Delay the next navigation command
+    uint32_t nav_delay_time_max_ms;  // used for delaying the navigation commands (eg land,takeoff etc.)
+    uint32_t nav_delay_time_start_ms;
+
+    // Delay Mission Scripting Command
+    int32_t condition_value;  // used in condition commands (eg delay, change alt, etc.)
+    uint32_t condition_start;
+
+    enum class State {
+        FlyToLocation = 0,
+        Descending = 1
+    };
+    State state = State::FlyToLocation;
+
+    struct {
+        PayloadPlaceStateType state = PayloadPlaceStateType_Calibrating_Hover_Start; // records state of place (descending, releasing, released, ...)
+        uint32_t hover_start_timestamp; // milliseconds
+        float hover_throttle_level;
+        uint32_t descend_start_timestamp; // milliseconds
+        uint32_t place_start_timestamp; // milliseconds
+        float descend_throttle_level;
+        float descend_start_altitude;
+        float descend_max; // centimetres
+    } nav_payload_place;
+};
+
+class ModeDrop : public Mode {
+
+public:
+    // inherit constructor
+    using Mode::Mode;
+
+    bool init(bool ignore_checks) override;
+    void run() override;
+
+    bool requires_GPS() const override {
+        return true;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return false;
+    };
+    bool is_autopilot() const override {
+        return true;
+    }
+    bool in_guided_mode() const override {
+        return mode() == Auto_NavGuided;
+    }
+
+    // Auto
+    AutoMode mode() const {
+        return _mode;
+    }
+
+    bool loiter_start();
+    void rtl_start();
+    void takeoff_start(const Location& dest_loc);
+    void wp_start(const Location& dest_loc);
+    void land_start();
+    void land_start(const Vector3f& destination);
+    void circle_movetoedge_start(const Location &circle_center, float radius_m);
+    void circle_start();
+    void spline_start(const Vector3f& destination, bool stopped_at_start, AC_WPNav::spline_segment_end_type seg_end_type, const Vector3f& next_spline_destination);
+    void spline_start(const Location& destination, bool stopped_at_start, AC_WPNav::spline_segment_end_type seg_end_type, const Location& next_destination);
+    void nav_guided_start();
+
+    bool is_landing() const override;
+
+    bool is_taking_off() const override;
+
+    bool requires_terrain_failsafe() const override {
+        return true;
+    }
+
+    // return true if this flight mode supports user takeoff
+    //  must_nagivate is true if mode must also control horizontal position
+    virtual bool has_user_takeoff(bool must_navigate) const override {
+        return false;
+    }
+
+    void payload_place_start();
+
+    // for GCS_MAVLink to call:
+    bool do_guided(const AP_Mission::Mission_Command& cmd);
+
+    AP_Mission mission{
+        FUNCTOR_BIND_MEMBER(&ModeAuto::start_command, bool, const AP_Mission::Mission_Command &),
+        FUNCTOR_BIND_MEMBER(&ModeAuto::verify_command, bool, const AP_Mission::Mission_Command &),
+        FUNCTOR_BIND_MEMBER(&ModeAuto::exit_mission, void)};
+
+protected:
+
+    const char *name() const override {
+        return "DROP";
+    }
+    const char *name4() const override {
+        return "DROP";
+    }
+
+    uint32_t wp_distance() const override;
+    int32_t wp_bearing() const override;
+    float crosstrack_error() const override {
+        return wp_nav->crosstrack_error();
+    }
     bool get_wp(Location &loc) override;
     void run_autopilot() override;
 
@@ -533,10 +803,18 @@ public:
     bool init(bool ignore_checks) override;
     void run() override;
 
-    bool requires_GPS() const override { return false; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(bool from_gcs) const override { return false; }
-    bool is_autopilot() const override { return false; }
+    bool requires_GPS() const override {
+        return false;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return false;
+    }
+    bool is_autopilot() const override {
+        return false;
+    }
 
     void save_tuning_gains();
     void stop();
@@ -544,8 +822,12 @@ public:
 
 protected:
 
-    const char *name() const override { return "AUTOTUNE"; }
-    const char *name4() const override { return "ATUN"; }
+    const char *name() const override {
+        return "AUTOTUNE";
+    }
+    const char *name4() const override {
+        return "ATUN";
+    }
 };
 #endif
 
@@ -559,17 +841,29 @@ public:
     bool init(bool ignore_checks) override;
     void run() override;
 
-    bool requires_GPS() const override { return true; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(bool from_gcs) const override { return false; };
-    bool is_autopilot() const override { return false; }
+    bool requires_GPS() const override {
+        return true;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return false;
+    };
+    bool is_autopilot() const override {
+        return false;
+    }
 
     void timeout_to_loiter_ms(uint32_t timeout_ms);
 
 protected:
 
-    const char *name() const override { return "BRAKE"; }
-    const char *name4() const override { return "BRAK"; }
+    const char *name() const override {
+        return "BRAKE";
+    }
+    const char *name4() const override {
+        return "BRAK";
+    }
 
 private:
 
@@ -590,15 +884,27 @@ public:
     bool init(bool ignore_checks) override;
     void run() override;
 
-    bool requires_GPS() const override { return true; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(bool from_gcs) const override { return false; };
-    bool is_autopilot() const override { return true; }
+    bool requires_GPS() const override {
+        return true;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return false;
+    };
+    bool is_autopilot() const override {
+        return true;
+    }
 
 protected:
 
-    const char *name() const override { return "CIRCLE"; }
-    const char *name4() const override { return "CIRC"; }
+    const char *name() const override {
+        return "CIRCLE";
+    }
+    const char *name4() const override {
+        return "CIRC";
+    }
 
     uint32_t wp_distance() const override;
     int32_t wp_bearing() const override;
@@ -620,15 +926,27 @@ public:
     bool init(bool ignore_checks) override;
     void run() override;
 
-    bool requires_GPS() const override { return true; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(bool from_gcs) const override { return true; };
-    bool is_autopilot() const override { return false; }
+    bool requires_GPS() const override {
+        return true;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return true;
+    };
+    bool is_autopilot() const override {
+        return false;
+    }
 
 protected:
 
-    const char *name() const override { return "DRIFT"; }
-    const char *name4() const override { return "DRIF"; }
+    const char *name() const override {
+        return "DRIFT";
+    }
+    const char *name4() const override {
+        return "DRIF";
+    }
 
 private:
 
@@ -646,15 +964,27 @@ public:
     bool init(bool ignore_checks) override;
     void run() override;
 
-    bool requires_GPS() const override { return false; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(bool from_gcs) const override { return false; };
-    bool is_autopilot() const override { return false; }
+    bool requires_GPS() const override {
+        return false;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return false;
+    };
+    bool is_autopilot() const override {
+        return false;
+    }
 
 protected:
 
-    const char *name() const override { return "FLIP"; }
-    const char *name4() const override { return "FLIP"; }
+    const char *name() const override {
+        return "FLIP";
+    }
+    const char *name4() const override {
+        return "FLIP";
+    }
 
 private:
 
@@ -691,10 +1021,18 @@ public:
     bool init(bool ignore_checks) override;
     void run(void) override;
 
-    bool requires_GPS() const override { return false; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(bool from_gcs) const override { return true; };
-    bool is_autopilot() const override { return false; }
+    bool requires_GPS() const override {
+        return false;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return true;
+    };
+    bool is_autopilot() const override {
+        return false;
+    }
     bool has_user_takeoff(bool must_navigate) const override {
         return !must_navigate;
     }
@@ -702,8 +1040,12 @@ public:
     static const struct AP_Param::GroupInfo var_info[];
 
 protected:
-    const char *name() const override { return "FLOWHOLD"; }
-    const char *name4() const override { return "FHLD"; }
+    const char *name() const override {
+        return "FLOWHOLD";
+    }
+    const char *name4() const override {
+        return "FHLD";
+    }
 
 private:
 
@@ -773,14 +1115,28 @@ public:
     bool init(bool ignore_checks) override;
     void run() override;
 
-    bool requires_GPS() const override { return true; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(bool from_gcs) const override { return from_gcs; }
-    bool is_autopilot() const override { return true; }
-    bool has_user_takeoff(bool must_navigate) const override { return true; }
-    bool in_guided_mode() const override { return true; }
+    bool requires_GPS() const override {
+        return true;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return from_gcs;
+    }
+    bool is_autopilot() const override {
+        return true;
+    }
+    bool has_user_takeoff(bool must_navigate) const override {
+        return true;
+    }
+    bool in_guided_mode() const override {
+        return true;
+    }
 
-    bool requires_terrain_failsafe() const override { return true; }
+    bool requires_terrain_failsafe() const override {
+        return true;
+    }
 
     void set_angle(const Quaternion &q, float climb_rate_cms, bool use_yaw_rate, float yaw_rate_rads);
     bool set_destination(const Vector3f& destination, bool use_yaw = false, float yaw_cd = 0.0, bool use_yaw_rate = false, float yaw_rate_cds = 0.0, bool yaw_relative = false, bool terrain_alt = false);
@@ -798,15 +1154,21 @@ public:
 
     bool do_user_takeoff_start(float final_alt_above_home) override;
 
-    GuidedMode mode() const { return guided_mode; }
+    GuidedMode mode() const {
+        return guided_mode;
+    }
 
     void angle_control_start();
     void angle_control_run();
 
 protected:
 
-    const char *name() const override { return "GUIDED"; }
-    const char *name4() const override { return "GUID"; }
+    const char *name() const override {
+        return "GUIDED";
+    }
+    const char *name4() const override {
+        return "GUID";
+    }
 
     uint32_t wp_distance() const override;
     int32_t wp_bearing() const override;
@@ -839,15 +1201,27 @@ public:
     bool init(bool ignore_checks) override;
     void run() override;
 
-    bool requires_GPS() const override { return false; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(bool from_gcs) const override { return from_gcs; }
-    bool is_autopilot() const override { return true; }
+    bool requires_GPS() const override {
+        return false;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return from_gcs;
+    }
+    bool is_autopilot() const override {
+        return true;
+    }
 
 protected:
 
-    const char *name() const override { return "GUIDED_NOGPS"; }
-    const char *name4() const override { return "GNGP"; }
+    const char *name() const override {
+        return "GUIDED_NOGPS";
+    }
+    const char *name4() const override {
+        return "GNGP";
+    }
 
 private:
 
@@ -863,19 +1237,33 @@ public:
     bool init(bool ignore_checks) override;
     void run() override;
 
-    bool requires_GPS() const override { return false; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(bool from_gcs) const override { return false; };
-    bool is_autopilot() const override { return true; }
+    bool requires_GPS() const override {
+        return false;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return false;
+    };
+    bool is_autopilot() const override {
+        return true;
+    }
 
-    bool is_landing() const override { return true; };
+    bool is_landing() const override {
+        return true;
+    };
 
     void do_not_use_GPS();
 
 protected:
 
-    const char *name() const override { return "LAND"; }
-    const char *name4() const override { return "LAND"; }
+    const char *name() const override {
+        return "LAND";
+    }
+    const char *name4() const override {
+        return "LAND";
+    }
 
 private:
 
@@ -893,20 +1281,36 @@ public:
     bool init(bool ignore_checks) override;
     void run() override;
 
-    bool requires_GPS() const override { return true; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(bool from_gcs) const override { return true; };
-    bool is_autopilot() const override { return false; }
-    bool has_user_takeoff(bool must_navigate) const override { return true; }
+    bool requires_GPS() const override {
+        return true;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return true;
+    };
+    bool is_autopilot() const override {
+        return false;
+    }
+    bool has_user_takeoff(bool must_navigate) const override {
+        return true;
+    }
 
 #if PRECISION_LANDING == ENABLED
-    void set_precision_loiter_enabled(bool value) { _precision_loiter_enabled = value; }
+    void set_precision_loiter_enabled(bool value) {
+        _precision_loiter_enabled = value;
+    }
 #endif
 
 protected:
 
-    const char *name() const override { return "LOITER"; }
-    const char *name4() const override { return "LOIT"; }
+    const char *name() const override {
+        return "LOITER";
+    }
+    const char *name4() const override {
+        return "LOIT";
+    }
 
     uint32_t wp_distance() const override;
     int32_t wp_bearing() const override;
@@ -934,16 +1338,30 @@ public:
     bool init(bool ignore_checks) override;
     void run() override;
 
-    bool requires_GPS() const override { return true; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(bool from_gcs) const override { return true; };
-    bool is_autopilot() const override { return false; }
-    bool has_user_takeoff(bool must_navigate) const override { return true; }
+    bool requires_GPS() const override {
+        return true;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return true;
+    };
+    bool is_autopilot() const override {
+        return false;
+    }
+    bool has_user_takeoff(bool must_navigate) const override {
+        return true;
+    }
 
 protected:
 
-    const char *name() const override { return "POSHOLD"; }
-    const char *name4() const override { return "PHLD"; }
+    const char *name() const override {
+        return "POSHOLD";
+    }
+    const char *name4() const override {
+        return "PHLD";
+    }
 
 private:
 
@@ -1016,12 +1434,22 @@ public:
     }
     void run(bool disarm_on_land);
 
-    bool requires_GPS() const override { return true; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(bool from_gcs) const override { return false; };
-    bool is_autopilot() const override { return true; }
+    bool requires_GPS() const override {
+        return true;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return false;
+    };
+    bool is_autopilot() const override {
+        return true;
+    }
 
-    bool requires_terrain_failsafe() const override { return true; }
+    bool requires_terrain_failsafe() const override {
+        return true;
+    }
 
     // for reporting to GCS
     bool get_wp(Location &loc) override;
@@ -1035,10 +1463,14 @@ public:
         RTL_FinalDescent,
         RTL_Land
     };
-    RTLState state() { return _state; }
+    RTLState state() {
+        return _state;
+    }
 
     // this should probably not be exposed
-    bool state_complete() { return _state_complete; }
+    bool state_complete() {
+        return _state_complete;
+    }
 
     bool is_landing() const override;
 
@@ -1053,20 +1485,28 @@ public:
 
 protected:
 
-    const char *name() const override { return "RTL"; }
-    const char *name4() const override { return "RTL "; }
+    const char *name() const override {
+        return "RTL";
+    }
+    const char *name4() const override {
+        return "RTL ";
+    }
 
     // for reporting to GCS
     uint32_t wp_distance() const override;
     int32_t wp_bearing() const override;
-    float crosstrack_error() const override { return wp_nav->crosstrack_error();}
+    float crosstrack_error() const override {
+        return wp_nav->crosstrack_error();
+    }
 
     void descent_start();
     void descent_run();
     void land_start();
     void land_run(bool disarm_on_land);
 
-    void set_descent_target_alt(uint32_t alt) { rtl_path.descent_target.alt = alt; }
+    void set_descent_target_alt(uint32_t alt) {
+        rtl_path.descent_target.alt = alt;
+    }
 
 private:
 
@@ -1113,24 +1553,38 @@ public:
     bool init(bool ignore_checks) override;
     void run() override;
 
-    bool requires_GPS() const override { return true; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(bool from_gcs) const override { return false; }
-    bool is_autopilot() const override { return true; }
+    bool requires_GPS() const override {
+        return true;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return false;
+    }
+    bool is_autopilot() const override {
+        return true;
+    }
 
     void save_position();
     void exit();
 
 protected:
 
-    const char *name() const override { return "SMARTRTL"; }
-    const char *name4() const override { return "SRTL"; }
+    const char *name() const override {
+        return "SMARTRTL";
+    }
+    const char *name4() const override {
+        return "SRTL";
+    }
 
     // for reporting to GCS
     bool get_wp(Location &loc) override;
     uint32_t wp_distance() const override;
     int32_t wp_bearing() const override;
-    float crosstrack_error() const override { return wp_nav->crosstrack_error();}
+    float crosstrack_error() const override {
+        return wp_nav->crosstrack_error();
+    }
 
 private:
 
@@ -1152,18 +1606,30 @@ public:
     bool init(bool ignore_checks) override;
     void run() override;
 
-    bool requires_GPS() const override { return false; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(bool from_gcs) const override { return true; };
-    bool is_autopilot() const override { return false; }
+    bool requires_GPS() const override {
+        return false;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return true;
+    };
+    bool is_autopilot() const override {
+        return false;
+    }
     bool has_user_takeoff(bool must_navigate) const override {
         return !must_navigate;
     }
 
 protected:
 
-    const char *name() const override { return "SPORT"; }
-    const char *name4() const override { return "SPRT"; }
+    const char *name() const override {
+        return "SPORT";
+    }
+    const char *name4() const override {
+        return "SPRT";
+    }
 
 private:
 
@@ -1178,15 +1644,27 @@ public:
 
     virtual void run() override;
 
-    bool requires_GPS() const override { return false; }
-    bool has_manual_throttle() const override { return true; }
-    bool allows_arming(bool from_gcs) const override { return true; };
-    bool is_autopilot() const override { return false; }
+    bool requires_GPS() const override {
+        return false;
+    }
+    bool has_manual_throttle() const override {
+        return true;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return true;
+    };
+    bool is_autopilot() const override {
+        return false;
+    }
 
 protected:
 
-    const char *name() const override { return "STABILIZE"; }
-    const char *name4() const override { return "STAB"; }
+    const char *name() const override {
+        return "STABILIZE";
+    }
+    const char *name4() const override {
+        return "STAB";
+    }
 
 private:
 
@@ -1217,19 +1695,35 @@ public:
     bool init(bool ignore_checks) override;
     void run() override;
 
-    bool requires_GPS() const override { return true; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(bool from_gcs) const override { return true; };
-    bool is_autopilot() const override { return false; }
-    bool logs_attitude() const override { return true; }
-    void set_magnitude(float input) { waveform_magnitude = input; }
+    bool requires_GPS() const override {
+        return true;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return true;
+    };
+    bool is_autopilot() const override {
+        return false;
+    }
+    bool logs_attitude() const override {
+        return true;
+    }
+    void set_magnitude(float input) {
+        waveform_magnitude = input;
+    }
 
     static const struct AP_Param::GroupInfo var_info[];
 
 protected:
 
-    const char *name() const override { return "SYSTEMID"; }
-    const char *name4() const override { return "SYSI"; }
+    const char *name() const override {
+        return "SYSTEMID";
+    }
+    const char *name4() const override {
+        return "SYSI";
+    }
 
 private:
 
@@ -1284,10 +1778,18 @@ public:
     bool init(bool ignore_checks) override;
     void run() override;
 
-    bool requires_GPS() const override { return true; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(bool from_gcs) const override { return true; };
-    bool is_autopilot() const override { return false; }
+    bool requires_GPS() const override {
+        return true;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return true;
+    };
+    bool is_autopilot() const override {
+        return false;
+    }
 
     // Throw types
     enum ThrowModeType {
@@ -1297,8 +1799,12 @@ public:
 
 protected:
 
-    const char *name() const override { return "THROW"; }
-    const char *name4() const override { return "THRW"; }
+    const char *name() const override {
+        return "THROW";
+    }
+    const char *name4() const override {
+        return "THRW";
+    }
 
 private:
 
@@ -1335,17 +1841,29 @@ public:
     bool init(bool ignore_checks) override;
     void run() override;
 
-    bool requires_GPS() const override { return true; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(bool from_gcs) const override { return false; }
-    bool is_autopilot() const override { return true; }
+    bool requires_GPS() const override {
+        return true;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return false;
+    }
+    bool is_autopilot() const override {
+        return true;
+    }
 
     bool set_velocity(const Vector3f& velocity_neu);
 
 protected:
 
-    const char *name() const override { return "AVOID_ADSB"; }
-    const char *name4() const override { return "AVOI"; }
+    const char *name() const override {
+        return "AVOID_ADSB";
+    }
+    const char *name4() const override {
+        return "AVOI";
+    }
 
 private:
 
@@ -1362,15 +1880,27 @@ public:
     void exit();
     void run() override;
 
-    bool requires_GPS() const override { return true; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(bool from_gcs) const override { return false; }
-    bool is_autopilot() const override { return true; }
+    bool requires_GPS() const override {
+        return true;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return false;
+    }
+    bool is_autopilot() const override {
+        return true;
+    }
 
 protected:
 
-    const char *name() const override { return "FOLLOW"; }
-    const char *name4() const override { return "FOLL"; }
+    const char *name() const override {
+        return "FOLLOW";
+    }
+    const char *name4() const override {
+        return "FOLL";
+    }
 
     // for reporting to GCS
     bool get_wp(Location &loc) override;
@@ -1380,7 +1910,7 @@ protected:
     uint32_t last_log_ms;   // system time of last time desired velocity was logging
 };
 
-class ModeZigZag : public Mode {        
+class ModeZigZag : public Mode {
 
 public:
 
@@ -1390,10 +1920,18 @@ public:
     bool init(bool ignore_checks) override;
     void run() override;
 
-    bool requires_GPS() const override { return true; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(bool from_gcs) const override { return true; }
-    bool is_autopilot() const override { return true; }
+    bool requires_GPS() const override {
+        return true;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return true;
+    }
+    bool is_autopilot() const override {
+        return true;
+    }
 
     // save current position as A (dest_num = 0) or B (dest_num = 1).  If both A and B have been saved move to the one specified
     void save_or_move_to_destination(uint8_t dest_num);
@@ -1403,8 +1941,12 @@ public:
 
 protected:
 
-    const char *name() const override { return "ZIGZAG"; }
-    const char *name4() const override { return "ZIGZ"; }
+    const char *name() const override {
+        return "ZIGZAG";
+    }
+    const char *name4() const override {
+        return "ZIGZ";
+    }
 
 private:
 
@@ -1436,17 +1978,29 @@ public:
     bool init(bool ignore_checks) override;
     void run() override;
 
-    bool is_autopilot() const override { return true; }
-    bool requires_GPS() const override { return false; }
-    bool has_manual_throttle() const override { return false; }
-    bool allows_arming(bool from_gcs) const override { return false; };
+    bool is_autopilot() const override {
+        return true;
+    }
+    bool requires_GPS() const override {
+        return false;
+    }
+    bool has_manual_throttle() const override {
+        return false;
+    }
+    bool allows_arming(bool from_gcs) const override {
+        return false;
+    };
 
     static const struct AP_Param::GroupInfo  var_info[];
 
 protected:
 
-    const char *name() const override { return "AUTOROTATE"; }
-    const char *name4() const override { return "AROT"; }
+    const char *name() const override {
+        return "AUTOROTATE";
+    }
+    const char *name4() const override {
+        return "AROT";
+    }
 
 private:
 
@@ -1474,29 +2028,31 @@ private:
         SS_GLIDE,
         FLARE,
         TOUCH_DOWN,
-        BAIL_OUT } phase_switch;
-        
+        BAIL_OUT
+    } phase_switch;
+
     enum class Navigation_Decision {
         USER_CONTROL_STABILISED,
         STRAIGHT_AHEAD,
         INTO_WIND,
-        NEAREST_RALLY} nav_pos_switch;
+        NEAREST_RALLY
+    } nav_pos_switch;
 
     // --- Internal flags ---
     struct controller_flags {
-            bool entry_initial             : 1;
-            bool ss_glide_initial          : 1;
-            bool flare_initial             : 1;
-            bool touch_down_initial        : 1;
-            bool straight_ahead_initial    : 1;
-            bool level_initial             : 1;
-            bool break_initial             : 1;
-            bool bail_out_initial          : 1;
-            bool bad_rpm                   : 1;
+        bool entry_initial             : 1;
+        bool ss_glide_initial          : 1;
+        bool flare_initial             : 1;
+        bool touch_down_initial        : 1;
+        bool straight_ahead_initial    : 1;
+        bool level_initial             : 1;
+        bool break_initial             : 1;
+        bool bail_out_initial          : 1;
+        bool bad_rpm                   : 1;
     } _flags;
 
     struct message_flags {
-            bool bad_rpm                   : 1;
+        bool bad_rpm                   : 1;
     } _msg_flags;
 
     //--- Internal functions ---
