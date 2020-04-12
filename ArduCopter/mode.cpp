@@ -50,7 +50,7 @@ Mode *Copter::mode_from_mode_num(const Mode::Number mode)
             ret = &mode_auto;
             break;
 #endif
-        case Mode::Number::Drop:
+        case Mode::Number::DROP:
             ret = &mode_drop;
             break;
 

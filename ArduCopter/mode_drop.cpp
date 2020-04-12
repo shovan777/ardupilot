@@ -20,7 +20,7 @@
  */
 
 // auto_init - initialise auto controller
-bool ModeAuto::init(bool ignore_checks)
+bool ModeDrop::init(bool ignore_checks)
 {
     if (mission.num_commands() > 1 || ignore_checks) {
         _mode = Auto_Loiter;
@@ -54,7 +54,7 @@ bool ModeAuto::init(bool ignore_checks)
 // auto_run - runs the auto controller
 //      should be called at 100hz or more
 //      relies on run_autopilot being called at 10hz which handles decision making and non-navigation related commands
-void ModeAuto::run()
+void ModeDrop::run()
 {
     // call the correct auto controller
     switch (_mode) {
@@ -106,7 +106,7 @@ void ModeAuto::run()
 
 // auto_loiter_start - initialises loitering in auto mode
 //  returns success/failure because this can be called by exit_mission
-bool ModeAuto::loiter_start()
+bool ModeDrop::loiter_start()
 {
     // return failure if GPS is bad
     if (!copter.position_ok()) {
@@ -128,7 +128,7 @@ bool ModeAuto::loiter_start()
 }
 
 // auto_rtl_start - initialises RTL in AUTO flight mode
-void ModeAuto::rtl_start()
+void ModeDrop::rtl_start()
 {
     _mode = Auto_RTL;
 
@@ -137,7 +137,7 @@ void ModeAuto::rtl_start()
 }
 
 // auto_takeoff_start - initialises waypoint controller to implement take-off
-void ModeAuto::takeoff_start(const Location& dest_loc)
+void ModeDrop::takeoff_start(const Location& dest_loc)
 {
     _mode = Auto_TakeOff;
 
@@ -189,7 +189,7 @@ void ModeAuto::takeoff_start(const Location& dest_loc)
 }
 
 // auto_wp_start - initialises waypoint controller to implement flying to a particular destination
-void ModeAuto::wp_start(const Location& dest_loc)
+void ModeDrop::wp_start(const Location& dest_loc)
 {
     _mode = Auto_WP;
 
@@ -208,7 +208,7 @@ void ModeAuto::wp_start(const Location& dest_loc)
 }
 
 // auto_land_start - initialises controller to implement a landing
-void ModeAuto::land_start()
+void ModeDrop::land_start()
 {
     // set target to stopping point
     Vector3f stopping_point;
@@ -219,7 +219,7 @@ void ModeAuto::land_start()
 }
 
 // auto_land_start - initialises controller to implement a landing
-void ModeAuto::land_start(const Vector3f& destination)
+void ModeDrop::land_start(const Vector3f& destination)
 {
     _mode = Auto_Land;
 
@@ -241,7 +241,7 @@ void ModeAuto::land_start(const Vector3f& destination)
 
 // auto_circle_movetoedge_start - initialise waypoint controller to move to edge of a circle with it's center at the specified location
 //  we assume the caller has performed all required GPS_ok checks
-void ModeAuto::circle_movetoedge_start(const Location &circle_center, float radius_m)
+void ModeDrop::circle_movetoedge_start(const Location &circle_center, float radius_m)
 {
     // convert location to vector from ekf origin
     Vector3f circle_center_neu;
@@ -299,7 +299,7 @@ void ModeAuto::circle_movetoedge_start(const Location &circle_center, float radi
 
 // auto_circle_start - initialises controller to fly a circle in AUTO flight mode
 //   assumes that circle_nav object has already been initialised with circle center and radius
-void ModeAuto::circle_start()
+void ModeDrop::circle_start()
 {
     _mode = Auto_Circle;
 
@@ -309,7 +309,7 @@ void ModeAuto::circle_start()
 
 // auto_spline_start - initialises waypoint controller to implement flying to a particular destination using the spline controller
 //  seg_end_type can be SEGMENT_END_STOP, SEGMENT_END_STRAIGHT or SEGMENT_END_SPLINE.  If Straight or Spline the next_destination should be provided
-void ModeAuto::spline_start(const Location& destination, bool stopped_at_start,
+void ModeDrop::spline_start(const Location& destination, bool stopped_at_start,
                                AC_WPNav::spline_segment_end_type seg_end_type, 
                                const Location& next_destination)
 {
@@ -331,7 +331,7 @@ void ModeAuto::spline_start(const Location& destination, bool stopped_at_start,
 
 #if NAV_GUIDED == ENABLED
 // auto_nav_guided_start - hand over control to external navigation controller in AUTO mode
-void ModeAuto::nav_guided_start()
+void ModeDrop::nav_guided_start()
 {
     _mode = Auto_NavGuided;
 
@@ -343,7 +343,7 @@ void ModeAuto::nav_guided_start()
 }
 #endif //NAV_GUIDED
 
-bool ModeAuto::is_landing() const
+bool ModeDrop::is_landing() const
 {
     switch(_mode) {
     case Auto_Land:
@@ -356,13 +356,13 @@ bool ModeAuto::is_landing() const
     return false;
 }
 
-bool ModeAuto::is_taking_off() const
+bool ModeDrop::is_taking_off() const
 {
     return ((_mode == Auto_TakeOff) && !wp_nav->reached_wp_destination());
 }
 
 // auto_payload_place_start - initialises controller to implement a placing
-void ModeAuto::payload_place_start()
+void ModeDrop::payload_place_start()
 {
     // set target to stopping point
     Vector3f stopping_point;
@@ -374,7 +374,7 @@ void ModeAuto::payload_place_start()
 }
 
 // start_command - this function will be called when the ap_mission lib wishes to start a new command
-bool ModeAuto::start_command(const AP_Mission::Mission_Command& cmd)
+bool ModeDrop::start_command(const AP_Mission::Mission_Command& cmd)
 {
     // To-Do: logging when new commands start/end
     if (copter.should_log(MASK_LOG_CMD)) {
@@ -506,7 +506,7 @@ bool ModeAuto::start_command(const AP_Mission::Mission_Command& cmd)
 }
 
 // exit_mission - function that is called once the mission completes
-void ModeAuto::exit_mission()
+void ModeDrop::exit_mission()
 {
     // play a tone
     AP_Notify::events.mission_complete = 1;
@@ -523,7 +523,7 @@ void ModeAuto::exit_mission()
 }
 
 // do_guided - start guided mode
-bool ModeAuto::do_guided(const AP_Mission::Mission_Command& cmd)
+bool ModeDrop::do_guided(const AP_Mission::Mission_Command& cmd)
 {
     // only process guided waypoint if we are in guided mode
     if (copter.control_mode != Mode::Number::GUIDED && !(copter.control_mode == Mode::Number::AUTO && mode() == Auto_NavGuided)) {
@@ -552,7 +552,7 @@ bool ModeAuto::do_guided(const AP_Mission::Mission_Command& cmd)
     return true;
 }
 
-uint32_t ModeAuto::wp_distance() const
+uint32_t ModeDrop::wp_distance() const
 {
     switch (_mode) {
     case Auto_Circle:
@@ -564,7 +564,7 @@ uint32_t ModeAuto::wp_distance() const
     }
 }
 
-int32_t ModeAuto::wp_bearing() const
+int32_t ModeDrop::wp_bearing() const
 {
     switch (_mode) {
     case Auto_Circle:
@@ -576,7 +576,7 @@ int32_t ModeAuto::wp_bearing() const
     }
 }
 
-bool ModeAuto::get_wp(Location& destination)
+bool ModeDrop::get_wp(Location& destination)
 {
     switch (_mode) {
     case Auto_NavGuided:
@@ -591,7 +591,7 @@ bool ModeAuto::get_wp(Location& destination)
 }
 
 // update mission
-void ModeAuto::run_autopilot()
+void ModeDrop::run_autopilot()
 {
     mission.update();
 }
@@ -607,7 +607,7 @@ Return true if we do not recognize the command so that we move on to the next co
 
 // verify_command - callback function called from ap-mission at 10hz or higher when a command is being run
 //      we double check that the flight mode is AUTO to avoid the possibility of ap-mission triggering actions while we're not in AUTO mode
-bool ModeAuto::verify_command(const AP_Mission::Mission_Command& cmd)
+bool ModeDrop::verify_command(const AP_Mission::Mission_Command& cmd)
 {
     if (copter.flightmode != &copter.mode_auto) {
         return false;
@@ -713,14 +713,14 @@ bool ModeAuto::verify_command(const AP_Mission::Mission_Command& cmd)
 
 // auto_takeoff_run - takeoff in auto mode
 //      called by auto_run at 100hz or more
-void ModeAuto::takeoff_run()
+void ModeDrop::takeoff_run()
 {
     auto_takeoff_run();
 }
 
 // auto_wp_run - runs the auto waypoint controller
 //      called by auto_run at 100hz or more
-void ModeAuto::wp_run()
+void ModeDrop::wp_run()
 {
     // process pilot's yaw input
     float target_yaw_rate = 0;
@@ -760,7 +760,7 @@ void ModeAuto::wp_run()
 
 // auto_spline_run - runs the auto spline controller
 //      called by auto_run at 100hz or more
-void ModeAuto::spline_run()
+void ModeDrop::spline_run()
 {
     // if not armed set throttle to zero and exit immediately
     if (is_disarmed_or_landed()) {
@@ -800,7 +800,7 @@ void ModeAuto::spline_run()
 
 // auto_land_run - lands in auto mode
 //      called by auto_run at 100hz or more
-void ModeAuto::land_run()
+void ModeDrop::land_run()
 {
 
     // if not armed set throttle to zero and exit immediately
@@ -820,7 +820,7 @@ void ModeAuto::land_run()
 
 // auto_rtl_run - rtl in AUTO flight mode
 //      called by auto_run at 100hz or more
-void ModeAuto::rtl_run()
+void ModeDrop::rtl_run()
 {
     // call regular rtl flight mode run function
     copter.mode_rtl.run(false);
@@ -828,7 +828,7 @@ void ModeAuto::rtl_run()
 
 // auto_circle_run - circle in AUTO flight mode
 //      called by auto_run at 100hz or more
-void ModeAuto::circle_run()
+void ModeDrop::circle_run()
 {
     // call circle controller
     copter.circle_nav->update();
@@ -848,7 +848,7 @@ void ModeAuto::circle_run()
 #if NAV_GUIDED == ENABLED
 // auto_nav_guided_run - allows control by external navigation controller
 //      called by auto_run at 100hz or more
-void ModeAuto::nav_guided_run()
+void ModeDrop::nav_guided_run()
 {
     // call regular guided flight mode run function
     copter.mode_guided.run();
@@ -857,7 +857,7 @@ void ModeAuto::nav_guided_run()
 
 // auto_loiter_run - loiter in AUTO flight mode
 //      called by auto_run at 100hz or more
-void ModeAuto::loiter_run()
+void ModeDrop::loiter_run()
 {
     // if not armed set throttle to zero and exit immediately
     if (is_disarmed_or_landed()) {
@@ -884,7 +884,7 @@ void ModeAuto::loiter_run()
 
 // auto_loiter_run - loiter to altitude in AUTO flight mode
 //      called by auto_run at 100hz or more
-void ModeAuto::loiter_to_alt_run()
+void ModeDrop::loiter_to_alt_run()
 {
     // if not auto armed or motor interlock not enabled set throttle to zero and exit immediately
     if (is_disarmed_or_landed() || !motors->get_interlock()) {
@@ -936,7 +936,7 @@ void ModeAuto::loiter_to_alt_run()
 }
 
 // auto_payload_place_start - initialises controller to implement placement of a load
-void ModeAuto::payload_place_start(const Vector3f& destination)
+void ModeDrop::payload_place_start(const Vector3f& destination)
 {
     _mode = Auto_NavPayloadPlace;
     nav_payload_place.state = PayloadPlaceStateType_Calibrating_Hover_Start;
@@ -956,7 +956,7 @@ void ModeAuto::payload_place_start(const Vector3f& destination)
 
 // auto_payload_place_run - places an object in auto mode
 //      called by auto_run at 100hz or more
-void ModeAuto::payload_place_run()
+void ModeDrop::payload_place_run()
 {
     if (!payload_place_run_should_run()) {
         zero_throttle_and_relax_ac();
@@ -988,7 +988,7 @@ void ModeAuto::payload_place_run()
     }
 }
 
-bool ModeAuto::payload_place_run_should_run()
+bool ModeDrop::payload_place_run_should_run()
 {
     // must be armed
     if (!motors->armed()) {
@@ -1010,7 +1010,7 @@ bool ModeAuto::payload_place_run_should_run()
     return true;
 }
 
-void ModeAuto::payload_place_run_loiter()
+void ModeDrop::payload_place_run_loiter()
 {
     // loiter...
     land_run_horizontal_control();
@@ -1026,7 +1026,7 @@ void ModeAuto::payload_place_run_loiter()
     pos_control->update_z_controller();
 }
 
-void ModeAuto::payload_place_run_descend()
+void ModeDrop::payload_place_run_descend()
 {
     land_run_horizontal_control();
     land_run_vertical_control();
@@ -1034,7 +1034,7 @@ void ModeAuto::payload_place_run_descend()
 
 // terrain_adjusted_location: returns a Location with lat/lon from cmd
 // and altitude from our current altitude adjusted for location
-Location ModeAuto::terrain_adjusted_location(const AP_Mission::Mission_Command& cmd) const
+Location ModeDrop::terrain_adjusted_location(const AP_Mission::Mission_Command& cmd) const
 {
     // convert to location class
     Location target_loc(cmd.content.location);
@@ -1058,13 +1058,13 @@ Location ModeAuto::terrain_adjusted_location(const AP_Mission::Mission_Command& 
 /********************************************************************************/
 
 // do_takeoff - initiate takeoff navigation command
-void ModeAuto::do_takeoff(const AP_Mission::Mission_Command& cmd)
+void ModeDrop::do_takeoff(const AP_Mission::Mission_Command& cmd)
 {
     // Set wp navigation target to safe altitude above current position
     takeoff_start(cmd.content.location);
 }
 
-Location ModeAuto::loc_from_cmd(const AP_Mission::Mission_Command& cmd) const
+Location ModeDrop::loc_from_cmd(const AP_Mission::Mission_Command& cmd) const
 {
     Location ret(cmd.content.location);
 
@@ -1089,7 +1089,7 @@ Location ModeAuto::loc_from_cmd(const AP_Mission::Mission_Command& cmd) const
 }
 
 // do_nav_wp - initiate move to next waypoint
-void ModeAuto::do_nav_wp(const AP_Mission::Mission_Command& cmd)
+void ModeDrop::do_nav_wp(const AP_Mission::Mission_Command& cmd)
 {
     Location target_loc = loc_from_cmd(cmd);
 
@@ -1134,7 +1134,7 @@ void ModeAuto::do_nav_wp(const AP_Mission::Mission_Command& cmd)
 }
 
 // do_land - initiate landing procedure
-void ModeAuto::do_land(const AP_Mission::Mission_Command& cmd)
+void ModeDrop::do_land(const AP_Mission::Mission_Command& cmd)
 {
     // To-Do: check if we have already landed
 
@@ -1157,7 +1157,7 @@ void ModeAuto::do_land(const AP_Mission::Mission_Command& cmd)
 
 // do_loiter_unlimited - start loitering with no end conditions
 // note: caller should set yaw_mode
-void ModeAuto::do_loiter_unlimited(const AP_Mission::Mission_Command& cmd)
+void ModeDrop::do_loiter_unlimited(const AP_Mission::Mission_Command& cmd)
 {
     // convert back to location
     Location target_loc(cmd.content.location);
@@ -1191,7 +1191,7 @@ void ModeAuto::do_loiter_unlimited(const AP_Mission::Mission_Command& cmd)
 }
 
 // do_circle - initiate moving in a circle
-void ModeAuto::do_circle(const AP_Mission::Mission_Command& cmd)
+void ModeDrop::do_circle(const AP_Mission::Mission_Command& cmd)
 {
     const Location circle_center = loc_from_cmd(cmd);
 
@@ -1204,7 +1204,7 @@ void ModeAuto::do_circle(const AP_Mission::Mission_Command& cmd)
 
 // do_loiter_time - initiate loitering at a point for a given time period
 // note: caller should set yaw_mode
-void ModeAuto::do_loiter_time(const AP_Mission::Mission_Command& cmd)
+void ModeDrop::do_loiter_time(const AP_Mission::Mission_Command& cmd)
 {
     // re-use loiter unlimited
     do_loiter_unlimited(cmd);
@@ -1216,7 +1216,7 @@ void ModeAuto::do_loiter_time(const AP_Mission::Mission_Command& cmd)
 
 // do_loiter_alt - initiate loitering at a point until a given altitude is reached
 // note: caller should set yaw_mode
-void ModeAuto::do_loiter_to_alt(const AP_Mission::Mission_Command& cmd)
+void ModeDrop::do_loiter_to_alt(const AP_Mission::Mission_Command& cmd)
 {
     // re-use loiter unlimited
     do_loiter_unlimited(cmd);
@@ -1251,7 +1251,7 @@ void ModeAuto::do_loiter_to_alt(const AP_Mission::Mission_Command& cmd)
 }
 
 // do_spline_wp - initiate move to next waypoint
-void ModeAuto::do_spline_wp(const AP_Mission::Mission_Command& cmd)
+void ModeDrop::do_spline_wp(const AP_Mission::Mission_Command& cmd)
 {
     const Location target_loc = loc_from_cmd(cmd);
 
@@ -1309,7 +1309,7 @@ void ModeAuto::do_spline_wp(const AP_Mission::Mission_Command& cmd)
 
 #if NAV_GUIDED == ENABLED
 // do_nav_guided_enable - initiate accepting commands from external nav computer
-void ModeAuto::do_nav_guided_enable(const AP_Mission::Mission_Command& cmd)
+void ModeDrop::do_nav_guided_enable(const AP_Mission::Mission_Command& cmd)
 {
     if (cmd.p1 > 0) {
         // start guided within auto
@@ -1318,7 +1318,7 @@ void ModeAuto::do_nav_guided_enable(const AP_Mission::Mission_Command& cmd)
 }
 
 // do_guided_limits - pass guided limits to guided controller
-void ModeAuto::do_guided_limits(const AP_Mission::Mission_Command& cmd)
+void ModeDrop::do_guided_limits(const AP_Mission::Mission_Command& cmd)
 {
     copter.mode_guided.limit_set(
         cmd.p1 * 1000, // convert seconds to ms
@@ -1329,7 +1329,7 @@ void ModeAuto::do_guided_limits(const AP_Mission::Mission_Command& cmd)
 #endif  // NAV_GUIDED
 
 // do_nav_delay - Delay the next navigation command
-void ModeAuto::do_nav_delay(const AP_Mission::Mission_Command& cmd)
+void ModeDrop::do_nav_delay(const AP_Mission::Mission_Command& cmd)
 {
     nav_delay_time_start_ms = millis();
 
@@ -1347,18 +1347,18 @@ void ModeAuto::do_nav_delay(const AP_Mission::Mission_Command& cmd)
 //	Condition (May) commands
 /********************************************************************************/
 
-void ModeAuto::do_wait_delay(const AP_Mission::Mission_Command& cmd)
+void ModeDrop::do_wait_delay(const AP_Mission::Mission_Command& cmd)
 {
     condition_start = millis();
     condition_value = cmd.content.delay.seconds * 1000;     // convert seconds to milliseconds
 }
 
-void ModeAuto::do_within_distance(const AP_Mission::Mission_Command& cmd)
+void ModeDrop::do_within_distance(const AP_Mission::Mission_Command& cmd)
 {
     condition_value  = cmd.content.distance.meters * 100;
 }
 
-void ModeAuto::do_yaw(const AP_Mission::Mission_Command& cmd)
+void ModeDrop::do_yaw(const AP_Mission::Mission_Command& cmd)
 {
 	auto_yaw.set_fixed_yaw(
 		cmd.content.yaw.angle_deg,
@@ -1373,7 +1373,7 @@ void ModeAuto::do_yaw(const AP_Mission::Mission_Command& cmd)
 
 
 
-void ModeAuto::do_change_speed(const AP_Mission::Mission_Command& cmd)
+void ModeDrop::do_change_speed(const AP_Mission::Mission_Command& cmd)
 {
     if (cmd.content.speed.target_ms > 0) {
         if (cmd.content.speed.speed_type == 2)  {
@@ -1386,7 +1386,7 @@ void ModeAuto::do_change_speed(const AP_Mission::Mission_Command& cmd)
     }
 }
 
-void ModeAuto::do_set_home(const AP_Mission::Mission_Command& cmd)
+void ModeDrop::do_set_home(const AP_Mission::Mission_Command& cmd)
 {
     if (cmd.p1 == 1 || (cmd.content.location.lat == 0 && cmd.content.location.lng == 0 && cmd.content.location.alt == 0)) {
         if (!copter.set_home_to_current_location(false)) {
@@ -1403,13 +1403,13 @@ void ModeAuto::do_set_home(const AP_Mission::Mission_Command& cmd)
 //          this involves either moving the camera to point at the ROI (region of interest)
 //          and possibly rotating the copter to point at the ROI if our mount type does not support a yaw feature
 //	TO-DO: add support for other features of MAV_CMD_DO_SET_ROI including pointing at a given waypoint
-void ModeAuto::do_roi(const AP_Mission::Mission_Command& cmd)
+void ModeDrop::do_roi(const AP_Mission::Mission_Command& cmd)
 {
     auto_yaw.set_roi(cmd.content.location);
 }
 
 // point the camera to a specified angle
-void ModeAuto::do_mount_control(const AP_Mission::Mission_Command& cmd)
+void ModeDrop::do_mount_control(const AP_Mission::Mission_Command& cmd)
 {
 #if MOUNT == ENABLED
     if (!copter.camera_mount.has_pan_control()) {
@@ -1421,7 +1421,7 @@ void ModeAuto::do_mount_control(const AP_Mission::Mission_Command& cmd)
 
 #if WINCH_ENABLED == ENABLED
 // control winch based on mission command
-void ModeAuto::do_winch(const AP_Mission::Mission_Command& cmd)
+void ModeDrop::do_winch(const AP_Mission::Mission_Command& cmd)
 {
     // Note: we ignore the gripper num parameter because we only support one gripper
     switch (cmd.content.winch.action) {
@@ -1445,7 +1445,7 @@ void ModeAuto::do_winch(const AP_Mission::Mission_Command& cmd)
 #endif
 
 // do_payload_place - initiate placing procedure
-void ModeAuto::do_payload_place(const AP_Mission::Mission_Command& cmd)
+void ModeDrop::do_payload_place(const AP_Mission::Mission_Command& cmd)
 {
     // if location provided we fly to that location at current altitude
     if (cmd.content.location.lat != 0 || cmd.content.location.lng != 0) {
@@ -1465,7 +1465,7 @@ void ModeAuto::do_payload_place(const AP_Mission::Mission_Command& cmd)
 }
 
 // do_RTL - start Return-to-Launch
-void ModeAuto::do_RTL(void)
+void ModeDrop::do_RTL(void)
 {
     // start rtl in auto flight mode
     rtl_start();
@@ -1476,7 +1476,7 @@ void ModeAuto::do_RTL(void)
 /********************************************************************************/
 
 // verify_takeoff - check if we have completed the takeoff
-bool ModeAuto::verify_takeoff()
+bool ModeDrop::verify_takeoff()
 {
     // have we reached our target altitude?
     const bool reached_wp_dest = copter.wp_nav->reached_wp_destination();
@@ -1490,7 +1490,7 @@ bool ModeAuto::verify_takeoff()
 }
 
 // verify_land - returns true if landing has been completed
-bool ModeAuto::verify_land()
+bool ModeDrop::verify_land()
 {
     bool retval = false;
 
@@ -1535,7 +1535,7 @@ bool ModeAuto::verify_land()
 #endif
 
 // verify_payload_place - returns true if placing has been completed
-bool ModeAuto::verify_payload_place()
+bool ModeDrop::verify_payload_place()
 {
     const uint16_t hover_throttle_calibrate_time = 2000; // milliseconds
     const uint16_t descend_throttle_calibrate_time = 2000; // milliseconds
@@ -1686,13 +1686,13 @@ bool ModeAuto::verify_payload_place()
 }
 #undef debug
 
-bool ModeAuto::verify_loiter_unlimited()
+bool ModeDrop::verify_loiter_unlimited()
 {
     return false;
 }
 
 // verify_loiter_time - check if we have loitered long enough
-bool ModeAuto::verify_loiter_time(const AP_Mission::Mission_Command& cmd)
+bool ModeDrop::verify_loiter_time(const AP_Mission::Mission_Command& cmd)
 {
     // return immediately if we haven't reached our destination
     if (!copter.wp_nav->reached_wp_destination()) {
@@ -1715,7 +1715,7 @@ bool ModeAuto::verify_loiter_time(const AP_Mission::Mission_Command& cmd)
 
 // verify_loiter_to_alt - check if we have reached both destination
 // (roughly) and altitude (precisely)
-bool ModeAuto::verify_loiter_to_alt()
+bool ModeDrop::verify_loiter_to_alt()
 {
     if (loiter_to_alt.reached_destination_xy &&
         loiter_to_alt.reached_alt) {
@@ -1727,7 +1727,7 @@ bool ModeAuto::verify_loiter_to_alt()
 // verify_RTL - handles any state changes required to implement RTL
 // do_RTL should have been called once first to initialise all variables
 // returns true with RTL has completed successfully
-bool ModeAuto::verify_RTL()
+bool ModeDrop::verify_RTL()
 {
     return (copter.mode_rtl.state_complete() && 
             (copter.mode_rtl.state() == ModeRTL::RTL_FinalDescent || copter.mode_rtl.state() == ModeRTL::RTL_Land) &&
@@ -1738,7 +1738,7 @@ bool ModeAuto::verify_RTL()
 // Verify Condition (May) commands
 /********************************************************************************/
 
-bool ModeAuto::verify_wait_delay()
+bool ModeDrop::verify_wait_delay()
 {
     if (millis() - condition_start > (uint32_t)MAX(condition_value,0)) {
         condition_value = 0;
@@ -1747,7 +1747,7 @@ bool ModeAuto::verify_wait_delay()
     return false;
 }
 
-bool ModeAuto::verify_within_distance()
+bool ModeDrop::verify_within_distance()
 {
     if (wp_distance() < (uint32_t)MAX(condition_value,0)) {
         condition_value = 0;
@@ -1757,7 +1757,7 @@ bool ModeAuto::verify_within_distance()
 }
 
 // verify_yaw - return true if we have reached the desired heading
-bool ModeAuto::verify_yaw()
+bool ModeDrop::verify_yaw()
 {
     // set yaw mode if it has been changed (the waypoint controller often retakes control of yaw as it executes a new waypoint command)
     if (auto_yaw.mode() != AUTO_YAW_FIXED) {
@@ -1769,7 +1769,7 @@ bool ModeAuto::verify_yaw()
 }
 
 // verify_nav_wp - check if we have reached the next way point
-bool ModeAuto::verify_nav_wp(const AP_Mission::Mission_Command& cmd)
+bool ModeDrop::verify_nav_wp(const AP_Mission::Mission_Command& cmd)
 {
     // check if we have reached the waypoint
     if ( !copter.wp_nav->reached_wp_destination() ) {
@@ -1798,7 +1798,7 @@ bool ModeAuto::verify_nav_wp(const AP_Mission::Mission_Command& cmd)
 }
 
 // verify_circle - check if we have circled the point enough
-bool ModeAuto::verify_circle(const AP_Mission::Mission_Command& cmd)
+bool ModeDrop::verify_circle(const AP_Mission::Mission_Command& cmd)
 {
     // check if we've reached the edge
     if (mode() == Auto_CircleMoveToEdge) {
@@ -1831,7 +1831,7 @@ bool ModeAuto::verify_circle(const AP_Mission::Mission_Command& cmd)
 }
 
 // verify_spline_wp - check if we have reached the next way point using spline
-bool ModeAuto::verify_spline_wp(const AP_Mission::Mission_Command& cmd)
+bool ModeDrop::verify_spline_wp(const AP_Mission::Mission_Command& cmd)
 {
     // check if we have reached the waypoint
     if ( !copter.wp_nav->reached_wp_destination() ) {
@@ -1853,7 +1853,7 @@ bool ModeAuto::verify_spline_wp(const AP_Mission::Mission_Command& cmd)
 
 #if NAV_GUIDED == ENABLED
 // verify_nav_guided - check if we have breached any limits
-bool ModeAuto::verify_nav_guided_enable(const AP_Mission::Mission_Command& cmd)
+bool ModeDrop::verify_nav_guided_enable(const AP_Mission::Mission_Command& cmd)
 {
     // if disabling guided mode then immediately return true so we move to next command
     if (cmd.p1 == 0) {
@@ -1866,7 +1866,7 @@ bool ModeAuto::verify_nav_guided_enable(const AP_Mission::Mission_Command& cmd)
 #endif  // NAV_GUIDED
 
 // verify_nav_delay - check if we have waited long enough
-bool ModeAuto::verify_nav_delay(const AP_Mission::Mission_Command& cmd)
+bool ModeDrop::verify_nav_delay(const AP_Mission::Mission_Command& cmd)
 {
     if (millis() - nav_delay_time_start_ms > nav_delay_time_max_ms) {
         nav_delay_time_max_ms = 0;
@@ -1875,4 +1875,4 @@ bool ModeAuto::verify_nav_delay(const AP_Mission::Mission_Command& cmd)
     return false;
 }
 
-#endif
+// #endif

@@ -640,9 +640,9 @@ public:
     bool do_guided(const AP_Mission::Mission_Command& cmd);
 
     AP_Mission mission{
-        FUNCTOR_BIND_MEMBER(&ModeAuto::start_command, bool, const AP_Mission::Mission_Command &),
-        FUNCTOR_BIND_MEMBER(&ModeAuto::verify_command, bool, const AP_Mission::Mission_Command &),
-        FUNCTOR_BIND_MEMBER(&ModeAuto::exit_mission, void)};
+        FUNCTOR_BIND_MEMBER(&ModeDrop::start_command, bool, const AP_Mission::Mission_Command &),
+        FUNCTOR_BIND_MEMBER(&ModeDrop::verify_command, bool, const AP_Mission::Mission_Command &),
+        FUNCTOR_BIND_MEMBER(&ModeDrop::exit_mission, void)};
 
 protected:
 
