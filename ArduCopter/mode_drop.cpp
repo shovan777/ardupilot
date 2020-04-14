@@ -27,7 +27,7 @@ bool ModeDrop::init(bool ignore_checks)
 
         // reject switching to auto mode if landed with motors armed but first command is not a takeoff (reduce chance of flips)
         if (motors->armed() && copter.ap.land_complete && !mission.starts_with_takeoff_cmd()) {
-            gcs().send_text(MAV_SEVERITY_CRITICAL, "Auto: Missing Takeoff Cmd");
+            gcs().send_text(MAV_SEVERITY_CRITICAL, "Drop: Missing Takeoff Cmd");
             return false;
         }
 
@@ -104,7 +104,7 @@ void ModeDrop::run()
     }
 }
 
-// auto_loiter_start - initialises loitering in auto mode
+// auto_loiter_start - initialises loitering in srop mode
 //  returns success/failure because this can be called by exit_mission
 bool ModeDrop::loiter_start()
 {
@@ -471,7 +471,7 @@ bool ModeDrop::start_command(const AP_Mission::Mission_Command& cmd)
         // point the camera to a specified angle
         do_mount_control(cmd);
         break;
-    
+
     case MAV_CMD_DO_FENCE_ENABLE:
 #if AC_FENCE == ENABLED
         if (cmd.p1 == 0) { //disable
@@ -526,7 +526,7 @@ void ModeDrop::exit_mission()
 bool ModeDrop::do_guided(const AP_Mission::Mission_Command& cmd)
 {
     // only process guided waypoint if we are in guided mode
-    if (copter.control_mode != Mode::Number::GUIDED && !(copter.control_mode == Mode::Number::AUTO && mode() == Auto_NavGuided)) {
+    if (copter.control_mode != Mode::Number::GUIDED && !(copter.control_mode == Mode::Number::DROP && mode() == Auto_NavGuided)) {
         return false;
     }
 
@@ -609,9 +609,9 @@ Return true if we do not recognize the command so that we move on to the next co
 //      we double check that the flight mode is AUTO to avoid the possibility of ap-mission triggering actions while we're not in AUTO mode
 bool ModeDrop::verify_command(const AP_Mission::Mission_Command& cmd)
 {
-    if (copter.flightmode != &copter.mode_auto) {
-        return false;
-    }
+    // if (copter.flightmode != &copter.mode_drop) {
+    //     return false;
+    // }
 
     bool cmd_complete = false;
 
@@ -813,7 +813,7 @@ void ModeDrop::land_run()
 
     // set motors to full range
     motors->set_desired_spool_state(AP_Motors::DesiredSpoolState::THROTTLE_UNLIMITED);
-    
+
     land_run_horizontal_control();
     land_run_vertical_control();
 }

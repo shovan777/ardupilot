@@ -49,10 +49,11 @@ Mode *Copter::mode_from_mode_num(const Mode::Number mode)
         case Mode::Number::AUTO:
             ret = &mode_auto;
             break;
-#endif
+
         case Mode::Number::DROP:
             ret = &mode_drop;
             break;
+#endif
 
 #if MODE_CIRCLE_ENABLED == ENABLED
         case Mode::Number::CIRCLE:

@@ -901,8 +901,8 @@ private:
     ModeAltHold mode_althold;
 #if MODE_AUTO_ENABLED == ENABLED
     ModeAuto mode_auto;
-#endif
     ModeDrop mode_drop;
+#endif
 #if AUTOTUNE_ENABLED == ENABLED
     AutoTune autotune;
     ModeAutoTune mode_autotune;
